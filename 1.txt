@@ -1,0 +1,90 @@
+"flw    fa0, 0(%[p_i])                \n\t"         
+"1:                                   \n\t" 
+"bltz   %[j], 2f                      \n\t" 
+"slli   t0, %[j], 2                   \n\t"
+"add    t1, %[p_a], t0                \n\t" 
+"flw    fa1, 0(t1)                    \n\t"
+"flt.s  t2, fa0, fa1                  \n\t" 
+"beqz   t2, 2f                        \n\t" 
+"fsw    fa1, 4(t1)                    \n\t" 
+"addi   %[j], %[j], -1                \n\t" 
+"addi   %[shift_cnt], %[shift_cnt], 1 \n\t" 
+"j      1b                            \n\t"
+"2:                                   \n\t" 
+"addi   t0, %[j], 1                   \n\t" 
+"slli   t0, t0, 2                     \n\t" 
+"add    t1, %[p_a], t0                \n\t"
+"fsw    fa0, 0(t1)                    \n\t" 
+: [j] "+r" (j), [shift_cnt] "+r" (shift_cnt) 
+: [p_a] "r" (p_a), [p_i] "r" (p_i)           
+: "t0", "t1", "t2", "fa0", "fa1", "memory"  
+
+"li      t3, 0                  \n\t"  
+"addi    t4, %[arr_size], -1    \n\t"   
+"fmv.s   fa0, %[target]         \n\t"   
+"1:                             \n\t"  
+"blt     t4, t3, 2f             \n\t"   
+"add     t0, t3, t4             \n\t"
+"srai    t0, t0, 1              \n\t"  
+"slli    t1, t0, 2              \n\t"    
+"add     t1, %[p_a], t1         \n\t"
+"flw     fa1, 0(t1)             \n\t"   
+"feq.s   t2, fa1, fa0           \n\t"
+"bnez    t2, 3f                 \n\t"  
+"flt.s   t2, fa1, fa0           \n\t"
+"bnez    t2, 4f                 \n\t"   
+"addi    t4, t0, -1             \n\t"   
+"j       1b                     \n\t"
+"4:                             \n\t"  
+"addi    t3, t0, 1              \n\t"   
+"j       1b                     \n\t"
+"3:                             \n\t" 
+"mv      %[result], t0          \n\t"   
+"2:                             \n\t"  
+: [result] "+r" (result)
+: [p_a] "r" (p_a),  [arr_size] "r" (arr_size), [target] "f" (target)
+: "t0", "t1", "t2", "t3", "t4", "fa0", "fa1", "memory"
+
+"mv      t0, %[head]          \n\t" 
+"mv      t1, %[head]          \n\t" 
+"li      %[result], 0         \n\t" 
+"1:                           \n\t"
+"beqz    t1, 2f               \n\t" 
+"ld      t1, 8(t1)            \n\t" 
+"beqz    t1, 2f               \n\t" 
+"ld      t1, 8(t1)            \n\t" 
+"ld      t0, 8(t0)            \n\t" 
+"beq     t0, t1, 3f           \n\t" 
+"j       1b                   \n\t" 
+"3:                           \n\t" 
+"li      %[result], 1         \n\t" 
+"mv      %[meet], t0          \n\t" 
+"2:                           \n\t"
+: [result] "+r" (result),[meet] "+r" (meet)               
+: [head] "r" (head)
+: "t0", "t1", "memory"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
